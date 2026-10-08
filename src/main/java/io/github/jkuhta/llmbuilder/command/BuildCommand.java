@@ -17,6 +17,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permission;
@@ -34,6 +38,8 @@ import java.util.function.Supplier;
 /** {@code /build} and its subcommands. */
 public final class BuildCommand {
 	private static final int MAX_LISTED = 4;
+	/** Owner id for builds started from the console or command blocks. */
+	private static final UUID CONSOLE = new UUID(0, 0);
 
 	private final Supplier<LlmBuilderConfig> config;
 	private final PlacementManager placements;
@@ -55,14 +61,30 @@ public final class BuildCommand {
 			.then(Commands.literal("fromjson")
 				.then(Commands.argument("file", StringArgumentType.word())
 					.suggests((ctx, builder) -> SharedSuggestionProvider.suggest(specFiles.names(), builder))
-					.executes(this::fromJson))));
+					.executes(ctx -> fromJson(ctx, Anchor.target(ctx.getSource().getPlayerOrException())))
+					.then(Commands.literal("at")
+						.then(Commands.argument("pos", BlockPosArgument.blockPos())
+							.then(Commands.argument("facing", StringArgumentType.word())
+								.suggests((ctx, builder) -> SharedSuggestionProvider.suggest(List.of("north", "east", "south", "west"), builder))
+								.executes(ctx -> fromJson(ctx, positioned(ctx)))))))));
 	}
 
-	private int fromJson(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+	/** Explicit placement for consoles and command blocks: front-centre at pos, front facing the given way. */
+	private static Anchor.Target positioned(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+		BlockPos pos = BlockPosArgument.getBlockPos(ctx, "pos");
+		Direction front = Direction.byName(StringArgumentType.getString(ctx, "facing"));
+		if (front == null || front.getAxis().isVertical()) {
+			throw new SimpleCommandExceptionType(Component.literal("Facing must be north, east, south or west")).create();
+		}
+		return new Anchor.Target(pos, front);
+	}
+
+	private int fromJson(CommandContext<CommandSourceStack> ctx, Anchor.Target target) {
 		CommandSourceStack source = ctx.getSource();
-		ServerPlayer player = source.getPlayerOrException();
+		ServerPlayer player = source.getPlayer();
+		UUID owner = player != null ? player.getUUID() : CONSOLE;
 		String name = StringArgumentType.getString(ctx, "file");
-		if (placements.isBusy(player.getUUID())) {
+		if (placements.isBusy(owner)) {
 			source.sendFailure(Component.literal("You already have a build in progress."));
 			return 0;
 		}
@@ -88,8 +110,6 @@ public final class BuildCommand {
 			sendList(source, "Spec " + name + " is invalid:", validation.errors(), ChatFormatting.RED);
 			return 0;
 		}
-		Anchor.Target target = Anchor.target(player);
-		UUID owner = player.getUUID();
 		source.sendSuccess(() -> Component.literal("Generating " + spec.name() + "...").withStyle(ChatFormatting.GRAY), false);
 		CompletableFuture.supplyAsync(() -> BuildingGenerator.generate(spec), worker)
 			.whenComplete((result, error) -> source.getServer().execute(() -> {
@@ -98,9 +118,10 @@ public final class BuildCommand {
 					source.sendFailure(Component.literal("Generation failed: " + error.getMessage()));
 					return;
 				}
-				PlacementJob job = PlacementJob.create(owner, spec.name(), player.level(), result.buffer(), target.transformFor(result.buffer()));
-				if (!placements.start(job, done -> player.sendSystemMessage(
-					Component.literal("Built " + done.name() + " (" + done.total() + " blocks).").withStyle(ChatFormatting.GREEN)))) {
+				PlacementJob job = PlacementJob.create(owner, spec.name(), source.getLevel(), result.buffer(), target.transformFor(result.buffer()));
+				if (!placements.start(job, done -> source.sendSystemMessage(
+					Component.literal("Built " + done.name() + " (" + done.total() + " blocks) between "
+						+ done.min().toShortString() + " and " + done.max().toShortString() + ".").withStyle(ChatFormatting.GREEN)))) {
 					source.sendFailure(Component.literal("You already have a build in progress."));
 					return;
 				}

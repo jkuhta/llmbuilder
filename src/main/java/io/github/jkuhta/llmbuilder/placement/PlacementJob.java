@@ -174,6 +174,16 @@ public final class PlacementJob {
 		return name;
 	}
 
+	/** Lowest corner of everything this job places. */
+	public BlockPos min() {
+		return steps.stream().map(Step::pos).reduce((a, b) -> new BlockPos(Math.min(a.getX(), b.getX()), Math.min(a.getY(), b.getY()), Math.min(a.getZ(), b.getZ()))).orElse(BlockPos.ZERO);
+	}
+
+	/** Highest corner of everything this job places. */
+	public BlockPos max() {
+		return steps.stream().map(Step::pos).reduce((a, b) -> new BlockPos(Math.max(a.getX(), b.getX()), Math.max(a.getY(), b.getY()), Math.max(a.getZ(), b.getZ()))).orElse(BlockPos.ZERO);
+	}
+
 	public ServerLevel level() {
 		return level;
 	}
