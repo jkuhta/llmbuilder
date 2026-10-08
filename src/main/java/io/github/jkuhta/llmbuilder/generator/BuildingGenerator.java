@@ -15,6 +15,7 @@ import io.github.jkuhta.llmbuilder.generator.structure.Bands;
 import io.github.jkuhta.llmbuilder.generator.structure.ClearVolume;
 import io.github.jkuhta.llmbuilder.generator.structure.Floors;
 import io.github.jkuhta.llmbuilder.generator.structure.Foundation;
+import io.github.jkuhta.llmbuilder.generator.structure.Piers;
 import io.github.jkuhta.llmbuilder.generator.structure.WallShell;
 import io.github.jkuhta.llmbuilder.spec.BuildingSpec;
 
@@ -36,6 +37,7 @@ public final class BuildingGenerator {
 		new WallShell(),
 		new Foundation(),
 		new Bands(),
+		new Piers(),
 		new Floors(),
 		new Windows(),
 		new Doors(),
