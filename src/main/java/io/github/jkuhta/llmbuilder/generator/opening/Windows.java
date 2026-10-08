@@ -184,8 +184,9 @@ public final class Windows implements Component {
 		for (int u = r.u0() - 1; u <= r.u1() + 1; u++) {
 			for (int y = r.b() - 1; y <= r.t() + 1; y++) {
 				boolean ring = u == r.u0() - 1 || u == r.u1() + 1 || y == r.b() - 1 || y == r.t() + 1;
-				if (ring) {
-					Vec3 p = f.at(u, y, -1);
+				Vec3 p = f.at(u, y, -1);
+				// Floor plates and roof decks stay intact; the frame only fills the wall around them.
+				if (ring && ctx.buffer.part(p) != Part.FLOOR) {
 					ctx.set(p, ctx.palette.full(Role.WINDOW_FRAME, p), Part.FRAME);
 				}
 			}
