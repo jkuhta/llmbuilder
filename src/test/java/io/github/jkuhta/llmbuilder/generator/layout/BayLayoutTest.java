@@ -44,4 +44,18 @@ class BayLayoutTest {
 			assertTrue(r.bays().get(i).u0() > r.bays().get(i - 1).u1(), "windows touch: " + r);
 		}
 	}
+
+	@Test
+	void keepsInnerPiersUniform() {
+		// 17 m chapel nave, 5 lancets: piers 2 wide everywhere, 1 block margins at the ends.
+		BayLayout.Result r = BayLayout.compute(17, 5, 1);
+		List<Integer> widths = r.gaps().stream().map(BayLayout.Gap::width).toList();
+		assertEquals(List.of(1, 2, 2, 2, 2, 1), widths);
+	}
+
+	@Test
+	void prefersGenerousMarginsOverWidePiers() {
+		BayLayout.Result r = BayLayout.compute(13, 3, 1);
+		assertEquals(List.of(2, 2, 2, 2), r.gaps().stream().map(BayLayout.Gap::width).toList());
+	}
 }

@@ -55,40 +55,52 @@ public final class BayLayout {
 		return compute(length, fit, 1);
 	}
 
+	/**
+	 * Picks the largest uniform pier width between bays such that the two end margins are at
+	 * least half a pier wide (and at least one block when {@code edges} is set). An odd leftover
+	 * block widens the centre pier or the centre bay, keeping the facade symmetric.
+	 */
 	private static Result build(int bays, int width, int gapTotal, boolean edges) {
-		int[] g = new int[bays + 1];
-		int remaining = gapTotal;
-		for (int i = 0; i <= bays; i++) {
-			boolean inner = i > 0 && i < bays;
-			if (inner || edges) {
-				g[i] = 1;
-				remaining--;
-			}
-		}
+		int minEdge = edges ? 1 : 0;
 		int[] widths = new int[bays];
 		java.util.Arrays.fill(widths, width);
-		boolean progress = true;
-		while (remaining > 0 && progress) {
-			progress = false;
-			for (int i = 0; i <= bays / 2; i++) {
-				int j = bays - i;
-				int need = i == j ? 1 : 2;
-				if (remaining >= need) {
-					g[i]++;
-					if (i != j) {
-						g[j]++;
-					}
-					remaining -= need;
-					progress = true;
+		int[] g = new int[bays + 1];
+		int maxInner = bays > 1 ? gapTotal / (bays - 1) : 0;
+		boolean found = false;
+		for (int inner = Math.max(maxInner, bays > 1 ? 1 : 0); inner >= (bays > 1 ? 1 : 0) && !found; inner--) {
+			int edgeTotal = gapTotal - (bays - 1) * inner;
+			if (edgeTotal < 0) {
+				continue;
+			}
+			int centreExtra = edgeTotal % 2;
+			int edge = (edgeTotal - centreExtra) / 2;
+			if (edge < minEdge || edge < (inner + 1) / 2 && bays > 1 && inner > 1) {
+				continue;
+			}
+			java.util.Arrays.fill(g, inner);
+			g[0] = edge;
+			g[bays] = edge;
+			if (centreExtra == 1) {
+				if (bays % 2 == 0) {
+					g[bays / 2]++;
+				} else {
+					widths[bays / 2]++;
 				}
 			}
+			found = true;
 		}
-		if (remaining == 1) {
-			// Odd block left: even bay count has a centre gap, odd bay count has a centre bay.
-			if (bays % 2 == 0) {
-				g[bays / 2]++;
-			} else {
-				widths[bays / 2]++;
+		if (!found) {
+			// Fall back to single-block piers with whatever margin is left.
+			java.util.Arrays.fill(g, 1);
+			int edgeTotal = gapTotal - (bays - 1);
+			g[0] = edgeTotal / 2;
+			g[bays] = edgeTotal / 2;
+			if (edgeTotal % 2 == 1) {
+				if (bays % 2 == 0) {
+					g[bays / 2]++;
+				} else {
+					widths[bays / 2]++;
+				}
 			}
 		}
 		List<Bay> result = new ArrayList<>();
