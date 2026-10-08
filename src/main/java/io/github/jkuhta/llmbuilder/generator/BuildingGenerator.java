@@ -2,6 +2,7 @@ package io.github.jkuhta.llmbuilder.generator;
 
 import io.github.jkuhta.llmbuilder.generator.core.BlockBuffer;
 import io.github.jkuhta.llmbuilder.generator.opening.Doors;
+import io.github.jkuhta.llmbuilder.generator.resolve.Connections;
 import io.github.jkuhta.llmbuilder.generator.resolve.StairShapes;
 import io.github.jkuhta.llmbuilder.generator.opening.Windows;
 import io.github.jkuhta.llmbuilder.generator.roof.FlatRoof;
@@ -38,7 +39,8 @@ public final class BuildingGenerator {
 		new RoofBuilder(),
 		new FlatRoof(),
 		new SteppedGable(),
-		new StairShapes()
+		new StairShapes(),
+		new Connections()
 	);
 
 	private BuildingGenerator() {
