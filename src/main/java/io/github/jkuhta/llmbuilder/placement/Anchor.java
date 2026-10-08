@@ -14,10 +14,18 @@ public final class Anchor {
 	private static final double REACH = 96;
 	private static final int FALLBACK_DISTANCE = 10;
 
+	/** Ground position under the crosshair and the direction the building's front should face. */
+	public record Target(BlockPos ground, Direction front) {
+		public Transform transformFor(BlockBuffer buffer) {
+			return Transform.anchored(localAnchor(buffer), ground, front);
+		}
+	}
+
 	private Anchor() {
 	}
 
-	public static Transform at(ServerPlayer player, BlockBuffer buffer) {
+	/** Captures the target when the command runs, so moving while the design is generated does not matter. */
+	public static Target target(ServerPlayer player) {
 		Direction facing = player.getDirection();
 		BlockPos target;
 		HitResult hit = player.pick(REACH, 1.0f, false);
@@ -27,8 +35,7 @@ public final class Anchor {
 			target = player.blockPosition().relative(facing, FALLBACK_DISTANCE);
 		}
 		int ground = player.level().getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, target.getX(), target.getZ());
-		BlockPos worldAnchor = new BlockPos(target.getX(), ground, target.getZ());
-		return Transform.anchored(localAnchor(buffer), worldAnchor, facing.getOpposite());
+		return new Target(new BlockPos(target.getX(), ground, target.getZ()), facing.getOpposite());
 	}
 
 	/** Front-centre of the building at ground level, in local coordinates. */
