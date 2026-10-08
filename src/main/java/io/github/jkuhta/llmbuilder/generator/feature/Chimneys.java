@@ -22,10 +22,10 @@ public final class Chimneys implements Component {
 			FacadeFrame f = FacadeFrame.of(ctx.layout.main(), chimney.side());
 			int u = column(ctx, f, chimney.position());
 			if (u < 0) {
-				ctx.warn("no free wall column for the chimney on the " + chimney.side().id() + " side");
-				continue;
+				interior(ctx, f, chimney.position());
+			} else {
+				build(ctx, f, u);
 			}
-			build(ctx, f, u);
 		}
 	}
 
@@ -71,6 +71,27 @@ public final class Chimneys implements Component {
 			Vec3 cap = band.above();
 			ctx.set(cap, ctx.palette.slab(Role.TRIM, cap, Half.BOTTOM), Part.CHIMNEY);
 		}
+	}
+
+	/**
+	 * When windows fill the whole wall, the stack rises inside instead: from the attic floor just
+	 * behind the wall, up through the roof.
+	 */
+	private static void interior(BuildContext ctx, FacadeFrame f, double position) {
+		int u = Math.max(2, Math.min(f.length() - 3, (int) Math.round(position * (f.length() - 1))));
+		Vec3 base = f.at(u, 0, -2);
+		if (!f.mass().isInterior(base.x(), base.z())) {
+			ctx.warn("no room for the chimney on the " + f.side().id() + " side");
+			return;
+		}
+		int top = highestSolid(ctx, base) + 2;
+		for (int y = f.mass().wallTop() + 1; y <= top; y++) {
+			Vec3 p = new Vec3(base.x(), y, base.z());
+			ctx.set(p, ctx.palette.full(Role.ACCENT, p), Part.CHIMNEY);
+		}
+		Vec3 band = new Vec3(base.x(), top, base.z());
+		ctx.set(band, ctx.palette.full(Role.TRIM, band), Part.CHIMNEY);
+		ctx.set(band.above(), ctx.palette.slab(Role.TRIM, band.above(), Half.BOTTOM), Part.CHIMNEY);
 	}
 
 	private static int highestSolid(BuildContext ctx, Vec3 column) {
