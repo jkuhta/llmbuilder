@@ -82,7 +82,8 @@ public final class Materials {
 		}
 		for (String prefix : new String[] {"", "exposed_", "weathered_", "oxidized_"}) {
 			stone("waxed_" + prefix + "cut_copper", "waxed_" + prefix + "cut_copper", "waxed_" + prefix + "cut_copper", false, null);
-			fullOnly("waxed_" + prefix + "copper", "waxed_" + prefix + "cut_copper");
+			String block = prefix.isEmpty() ? "waxed_copper_block" : "waxed_" + prefix + "copper";
+			fullOnly(block, "waxed_" + prefix + "cut_copper");
 		}
 
 		for (String wood : WOODS) {
