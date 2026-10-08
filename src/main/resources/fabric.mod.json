@@ -1,0 +1,23 @@
+{
+	"schemaVersion": 1,
+	"id": "llmbuilder",
+	"version": "${version}",
+	"name": "LLM Builder",
+	"description": "Generate detailed, realistic buildings from a chat prompt. Claude designs an architectural spec; a procedural generator turns it into blocks.",
+	"authors": ["jkuhta"],
+	"contact": {
+		"sources": "https://github.com/jkuhta/llmbuilder"
+	},
+	"license": "MIT",
+	"environment": "*",
+	"entrypoints": {
+		"main": ["io.github.jkuhta.llmbuilder.LlmBuilderMod"],
+		"client": ["io.github.jkuhta.llmbuilder.client.LlmBuilderClient"]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
