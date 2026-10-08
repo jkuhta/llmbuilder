@@ -1,0 +1,31 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Fabric / Loom
+run/
+remappedSrc/
+out/
+
+# IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VS Code / Eclipse
+.vscode/
+.classpath
+.project
+.settings/
+bin/
+
+# OS
+.DS_Store
+
+# Secrets: never commit configs that may contain API keys
+config/llmbuilder.json
+**/llmbuilder.json
+*.env
+.env*
