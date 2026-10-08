@@ -21,6 +21,10 @@ public final class Bands implements Component {
 		boolean bands = ctx.spec.walls().bands();
 		boolean cornice = ctx.spec.roof().cornice();
 		for (FacadeFrame f : ctx.layout.facades()) {
+			// Blank facades are party walls: plain masonry without courses or cornice.
+			if (ctx.facadeSpec(f).blank()) {
+				continue;
+			}
 			Mass m = f.mass();
 			if (bands) {
 				for (int floor = 1; floor < m.floors(); floor++) {
