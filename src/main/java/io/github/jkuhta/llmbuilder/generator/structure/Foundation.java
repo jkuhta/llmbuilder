@@ -17,17 +17,27 @@ public final class Foundation implements Component {
 	public void apply(BuildContext ctx) {
 		int plinth = ctx.layout.plinth();
 		for (FacadeFrame f : ctx.layout.facades()) {
-			for (int u = 1; u < f.length() - 1; u++) {
+			for (int u = 0; u < f.length(); u++) {
 				if (!ctx.layout.exposed(f, u, 0)) {
 					continue;
 				}
-				for (int y = 0; y < plinth; y++) {
-					Vec3 p = f.at(u, y, 1);
-					ctx.setIfFree(p, ctx.palette.full(Role.FOUNDATION, p), Part.PLINTH);
+				plinth(ctx, f, f.at(u, 0, 1), plinth);
+				// Wrap around convex corners so the plinth runs continuously.
+				if (u == 0 && WallShell.isConvexCorner(ctx, f, u, f.left())) {
+					plinth(ctx, f, f.at(u, 0, 1).offset(f.left()), plinth);
+				} else if (u == f.length() - 1 && WallShell.isConvexCorner(ctx, f, u, f.right())) {
+					plinth(ctx, f, f.at(u, 0, 1).offset(f.right()), plinth);
 				}
-				Vec3 cap = f.at(u, plinth, 1);
-				ctx.setIfFree(cap, ctx.palette.stairs(Role.FOUNDATION, cap, f.inward(), Half.BOTTOM), Part.PLINTH);
 			}
 		}
+	}
+
+	private static void plinth(BuildContext ctx, FacadeFrame f, Vec3 ground, int height) {
+		for (int y = 0; y < height; y++) {
+			Vec3 p = ground.above(y);
+			ctx.setIfFree(p, ctx.palette.full(Role.FOUNDATION, p), Part.PLINTH);
+		}
+		Vec3 cap = ground.above(height);
+		ctx.setIfFree(cap, ctx.palette.stairs(Role.FOUNDATION, cap, f.inward(), Half.BOTTOM), Part.PLINTH);
 	}
 }
