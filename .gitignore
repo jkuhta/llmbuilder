@@ -29,3 +29,9 @@ config/llmbuilder.json
 **/llmbuilder.json
 *.env
 .env*
+
+# Local debugging tests
+src/test/java/**/scratch/
+
+# Logs written by Minecraft classes during tests
+logs/

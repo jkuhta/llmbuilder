@@ -1,0 +1,48 @@
+{
+  "name": "Herengracht canal house",
+  "style": "dutch_canal_house",
+  "era": "17th century Dutch Golden Age",
+  "footprint": { "shape": "rect", "width": 9, "depth": 14 },
+  "floors": { "count": 4, "heights": [5, 4, 4, 3], "groundFloor": "raised_basement", "plinth": 1 },
+  "roof": { "type": "stepped_gable", "pitch": "steep", "overhang": 0, "ridge": "depth", "cornice": true },
+  "walls": { "corners": "none", "bands": true, "framing": "none" },
+  "palette": {
+    "wall": [
+      { "material": "bricks", "weight": 8 },
+      { "material": "mud_bricks", "weight": 1 },
+      { "material": "granite", "weight": 1 }
+    ],
+    "trim": [{ "material": "smooth_quartz", "weight": 1 }],
+    "accent": [{ "material": "dark_oak", "weight": 1 }],
+    "roof": [
+      { "material": "deepslate_tiles", "weight": 4 },
+      { "material": "cobbled_deepslate", "weight": 1 }
+    ],
+    "foundation": [
+      { "material": "stone_bricks", "weight": 3 },
+      { "material": "mossy_stone_bricks", "weight": 1 }
+    ],
+    "windowFrame": [{ "material": "smooth_quartz", "weight": 1 }],
+    "door": [{ "material": "dark_oak", "weight": 1 }],
+    "floor": [{ "material": "spruce", "weight": 1 }],
+    "glass": "glass"
+  },
+  "facades": {
+    "front": {
+      "bays": 3,
+      "windows": { "type": "sash", "width": 1, "shutters": false, "hood": true },
+      "floorWindows": { "3": "arched" },
+      "doors": [{ "bay": 0, "type": "single", "steps": true, "awning": false }],
+      "piers": "none"
+    },
+    "back": {
+      "bays": 3,
+      "windows": { "type": "casement", "width": 1, "shutters": true }
+    },
+    "left": { "bays": 0, "blank": true },
+    "right": { "bays": 0, "blank": true }
+  },
+  "chimneys": [{ "side": "back", "position": 0.25 }],
+  "detail": { "level": "high", "interior": false, "landscaping": false, "lighting": true, "modules": ["flower_boxes"] },
+  "seed": 1658
+}
