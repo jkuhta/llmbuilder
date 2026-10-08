@@ -1,5 +1,6 @@
 package io.github.jkuhta.llmbuilder.generator;
 
+import io.github.jkuhta.llmbuilder.generator.check.RealismChecker;
 import io.github.jkuhta.llmbuilder.generator.core.BlockBuffer;
 import io.github.jkuhta.llmbuilder.generator.feature.Chimneys;
 import io.github.jkuhta.llmbuilder.generator.opening.Doors;
@@ -17,6 +18,7 @@ import io.github.jkuhta.llmbuilder.generator.structure.Foundation;
 import io.github.jkuhta.llmbuilder.generator.structure.WallShell;
 import io.github.jkuhta.llmbuilder.spec.BuildingSpec;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,7 +27,7 @@ import java.util.List;
  * spec and seed.
  */
 public final class BuildingGenerator {
-	public record Result(BlockBuffer buffer, List<String> warnings) {
+	public record Result(BlockBuffer buffer, List<String> warnings, List<RealismChecker.Violation> violations) {
 	}
 
 	private static final List<Component> PIPELINE = List.of(
@@ -53,6 +55,9 @@ public final class BuildingGenerator {
 		for (Component component : PIPELINE) {
 			component.apply(ctx);
 		}
-		return new Result(ctx.buffer, ctx.warnings());
+		List<RealismChecker.Violation> violations = RealismChecker.check(ctx);
+		List<String> warnings = new ArrayList<>(ctx.warnings());
+		violations.forEach(v -> warnings.add(v.toString()));
+		return new Result(ctx.buffer, List.copyOf(warnings), violations);
 	}
 }
