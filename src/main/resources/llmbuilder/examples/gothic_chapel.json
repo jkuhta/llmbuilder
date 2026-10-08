@@ -1,0 +1,40 @@
+{
+  "name": "Chapel of St. Aldric",
+  "style": "gothic_chapel",
+  "era": "13th century Gothic",
+  "footprint": { "shape": "rect", "width": 11, "depth": 17 },
+  "floors": { "count": 2, "heights": [6, 5], "groundFloor": "standard", "plinth": 1 },
+  "roof": { "type": "gable", "pitch": "steep", "overhang": 1, "ridge": "depth", "cornice": true },
+  "walls": { "corners": "pillars", "bands": false, "framing": "none" },
+  "palette": {
+    "wall": [
+      { "material": "stone_bricks", "weight": 5 },
+      { "material": "andesite", "weight": 1 },
+      { "material": "mossy_stone_bricks", "weight": 1 }
+    ],
+    "trim": [{ "material": "polished_andesite", "weight": 1 }],
+    "accent": [{ "material": "chiseled_stone_bricks", "weight": 1 }],
+    "roof": [
+      { "material": "deepslate_tiles", "weight": 3 },
+      { "material": "deepslate_bricks", "weight": 1 }
+    ],
+    "foundation": [{ "material": "cobblestone", "weight": 1 }],
+    "windowFrame": [{ "material": "polished_andesite", "weight": 1 }],
+    "door": [{ "material": "dark_oak", "weight": 1 }],
+    "floor": [{ "material": "spruce", "weight": 1 }],
+    "glass": "light_blue_stained_glass"
+  },
+  "facades": {
+    "front": {
+      "bays": 1,
+      "windows": { "type": "lancet", "width": 2, "hood": true },
+      "doors": [{ "bay": 0, "type": "arched", "steps": true }]
+    },
+    "back": { "bays": 1, "windows": { "type": "round", "width": 3 }, "floorWindows": { "0": "lancet" } },
+    "left": { "bays": 5, "windows": { "type": "lancet", "width": 1 }, "floorWindows": { "1": "none" }, "piers": "buttresses" },
+    "right": { "bays": 5, "windows": { "type": "lancet", "width": 1 }, "floorWindows": { "1": "none" }, "piers": "buttresses" }
+  },
+  "chimneys": [],
+  "detail": { "level": "high", "interior": false, "landscaping": false, "lighting": true, "modules": [] },
+  "seed": 1250
+}
