@@ -205,11 +205,14 @@ public final class Windows implements Component {
 	 * one column of wall between neighbouring jambs; otherwise the facade would read as all frame.
 	 */
 	static void sideFrames(BuildContext ctx, FacadeFrame f, Rect r) {
+		// Both jambs or neither, so each window stays symmetric.
 		for (int u : new int[] {r.u0() - 1, r.u1() + 1}) {
 			BayLayout.Gap gap = gapAt(ctx, f, u);
 			if (gap == null || gap.width() < (gap.inner() ? 3 : 2)) {
-				continue;
+				return;
 			}
+		}
+		for (int u : new int[] {r.u0() - 1, r.u1() + 1}) {
 			for (int y = r.b(); y <= r.t(); y++) {
 				Vec3 p = f.at(u, y, 0);
 				ctx.set(p, ctx.palette.full(Role.WINDOW_FRAME, p), Part.FRAME);
