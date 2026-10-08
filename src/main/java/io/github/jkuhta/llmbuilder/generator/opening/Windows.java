@@ -194,13 +194,13 @@ public final class Windows implements Component {
 	}
 
 	/**
-	 * Frame-coloured jambs in the wall plane. Skipped where a single column separates two
-	 * openings, so narrow piers stay in the wall material.
+	 * Frame-coloured jambs in the wall plane, only where the pier is wide enough to keep at least
+	 * one column of wall between neighbouring jambs; otherwise the facade would read as all frame.
 	 */
 	static void sideFrames(BuildContext ctx, FacadeFrame f, Rect r) {
 		for (int u : new int[] {r.u0() - 1, r.u1() + 1}) {
-			int beyond = u == r.u0() - 1 ? u - 1 : u + 1;
-			if (beyond < 1 || beyond > f.length() - 2 || isOpeningColumn(ctx, f, beyond, r)) {
+			BayLayout.Gap gap = gapAt(ctx, f, u);
+			if (gap == null || gap.width() < (gap.inner() ? 3 : 2)) {
 				continue;
 			}
 			for (int y = r.b(); y <= r.t(); y++) {
@@ -210,13 +210,13 @@ public final class Windows implements Component {
 		}
 	}
 
-	private static boolean isOpeningColumn(BuildContext ctx, FacadeFrame f, int u, Rect r) {
-		for (BayLayout.Bay bay : ctx.bays(f).bays()) {
-			if (u >= bay.u0() && u <= bay.u1()) {
-				return true;
+	private static BayLayout.Gap gapAt(BuildContext ctx, FacadeFrame f, int u) {
+		for (BayLayout.Gap gap : ctx.bays(f).gaps()) {
+			if (u >= gap.u0() && u < gap.u0() + gap.width()) {
+				return gap;
 			}
 		}
-		return false;
+		return null;
 	}
 
 	static void lintel(BuildContext ctx, FacadeFrame f, Rect r) {
