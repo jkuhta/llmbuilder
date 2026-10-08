@@ -91,6 +91,11 @@ public final class Windows implements Component {
 		return switch (type) {
 			case ROUND -> {
 				int c = (u0 + u1) / 2;
+				if (bay.width() >= 3 && h >= 5) {
+					// 3x3 oculus centred in the storey.
+					int mid = base + (h + 1) / 2;
+					yield new Rect(c - 1 + (bay.width() % 2 == 0 ? 1 : 0), c + 1 + (bay.width() % 2 == 0 ? 1 : 0), mid - 1, mid + 1);
+				}
 				int y = base + Math.max(2, h / 2);
 				yield new Rect(c, c + (bay.width() % 2 == 0 ? 1 : 0), y, y);
 			}
@@ -146,7 +151,9 @@ public final class Windows implements Component {
 				ctx.set(p, ctx.palette.stairs(Role.TRIM, p, f.inward(), Half.TOP), Part.SILL);
 			}
 		}
-		if ((type == WindowType.ARCHED || type == WindowType.LANCET) && r.width() >= 2 && r.height() >= 2) {
+		if (type == WindowType.ROUND && r.width() == 3 && r.height() == 3) {
+			oculus(ctx, f, r);
+		} else if ((type == WindowType.ARCHED || type == WindowType.LANCET) && r.width() >= 2 && r.height() >= 2) {
 			archHead(ctx, f, r);
 		} else if (type == WindowType.ARCHED && ctx.detail(Level.MEDIUM)) {
 			Vec3 key = f.at((r.u0() + r.u1()) / 2, r.t() + 1, 0);
@@ -246,6 +253,15 @@ public final class Windows implements Component {
 			}
 		}
 		return true;
+	}
+
+	/** Rounds all four corners of a 3x3 opening with stairs so it reads as a circular window. */
+	private static void oculus(BuildContext ctx, FacadeFrame f, Rect r) {
+		archHead(ctx, f, r);
+		Vec3 left = f.at(r.u0(), r.b(), 0);
+		Vec3 right = f.at(r.u1(), r.b(), 0);
+		ctx.set(left, ctx.palette.stairs(Role.TRIM, left, f.left(), Half.BOTTOM), Part.LINTEL);
+		ctx.set(right, ctx.palette.stairs(Role.TRIM, right, f.right(), Half.BOTTOM), Part.LINTEL);
 	}
 
 	private static void shutters(BuildContext ctx, FacadeFrame f, Rect r) {
