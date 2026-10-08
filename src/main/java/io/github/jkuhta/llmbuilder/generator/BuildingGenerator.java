@@ -1,6 +1,7 @@
 package io.github.jkuhta.llmbuilder.generator;
 
 import io.github.jkuhta.llmbuilder.generator.core.BlockBuffer;
+import io.github.jkuhta.llmbuilder.generator.opening.Windows;
 import io.github.jkuhta.llmbuilder.generator.roof.FlatRoof;
 import io.github.jkuhta.llmbuilder.generator.roof.RoofBuilder;
 import io.github.jkuhta.llmbuilder.generator.roof.RoofPlanner;
@@ -30,6 +31,7 @@ public final class BuildingGenerator {
 		new Foundation(),
 		new Bands(),
 		new Floors(),
+		new Windows(),
 		new RoofBuilder(),
 		new FlatRoof(),
 		new SteppedGable()
