@@ -29,7 +29,7 @@ public final class BlockColors {
 			Rgba c = average("/assets/minecraft/textures/block/" + candidate + ".png");
 			if (c != null) {
 				if (path.contains("glass")) {
-					return new Rgba(c.r(), c.g(), c.b(), 110);
+					return new Rgba((int) (c.r() * 0.55), (int) (c.g() * 0.65), (int) (c.b() * 0.8), 215);
 				}
 				if (path.contains("leaves")) {
 					return new Rgba(70, 120, 45, 255);
