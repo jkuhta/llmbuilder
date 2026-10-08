@@ -59,10 +59,10 @@ public final class Chimneys implements Component {
 		int top = Math.max(highest + 2, wallTop + 3);
 		for (int y = 0; y <= top; y++) {
 			Vec3 breast = f.at(u, y, 1);
-			ctx.set(breast, ctx.palette.full(y <= ctx.layout.plinth() ? Role.FOUNDATION : Role.ACCENT, breast), Part.CHIMNEY);
+			ctx.set(breast, y <= ctx.layout.plinth() ? ctx.palette.full(Role.FOUNDATION, breast) : ctx.palette.masonry(breast), Part.CHIMNEY);
 			if (y > wallTop) {
 				Vec3 flue = f.at(u, y, 0);
-				ctx.set(flue, ctx.palette.full(Role.ACCENT, flue), Part.CHIMNEY);
+				ctx.set(flue, ctx.palette.masonry(flue), Part.CHIMNEY);
 			}
 		}
 		for (int w = 0; w <= 1; w++) {
@@ -87,7 +87,7 @@ public final class Chimneys implements Component {
 		int top = highestSolid(ctx, base) + 2;
 		for (int y = f.mass().wallTop() + 1; y <= top; y++) {
 			Vec3 p = new Vec3(base.x(), y, base.z());
-			ctx.set(p, ctx.palette.full(Role.ACCENT, p), Part.CHIMNEY);
+			ctx.set(p, ctx.palette.masonry(p), Part.CHIMNEY);
 		}
 		Vec3 band = new Vec3(base.x(), top, base.z());
 		ctx.set(band, ctx.palette.full(Role.TRIM, band), Part.CHIMNEY);

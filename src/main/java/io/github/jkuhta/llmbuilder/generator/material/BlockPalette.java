@@ -124,6 +124,20 @@ public final class BlockPalette {
 		return Block.of(Materials.resolve(palette.glass(), Shape.PANE).orElse("glass_pane"));
 	}
 
+	/**
+	 * Full block of the first masonry role among accent, wall and trim, for elements that must
+	 * not be timber such as chimneys. Falls back to bricks.
+	 */
+	public Block masonry(Vec3 pos) {
+		for (Role role : new Role[] {Role.ACCENT, Role.WALL, Role.TRIM}) {
+			Material m = Materials.find(primary(role)).orElse(null);
+			if (m != null && m.kind() == Material.Kind.STONE) {
+				return full(role, pos);
+			}
+		}
+		return Block.of("bricks");
+	}
+
 	public boolean supports(Role role, Shape shape) {
 		return Materials.supports(primary(role), shape);
 	}
