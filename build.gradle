@@ -53,6 +53,10 @@ java {
 
 test {
 	useJUnitPlatform()
+	// Vanilla blockstates and textures live in the client jar; tests use them to validate
+	// generated block states and to render preview images.
+	classpath += sourceSets.client.runtimeClasspath
+	systemProperty "llmbuilder.renderDir", layout.buildDirectory.dir("renders").get().asFile.absolutePath
 	testLogging {
 		events "failed"
 		exceptionFormat "full"

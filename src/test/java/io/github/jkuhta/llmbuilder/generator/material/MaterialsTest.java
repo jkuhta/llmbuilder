@@ -1,6 +1,10 @@
 package io.github.jkuhta.llmbuilder.generator.material;
 
+import io.github.jkuhta.llmbuilder.testutil.VanillaBlockStates;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -26,5 +30,16 @@ class MaterialsTest {
 		assertFalse(Materials.supports("glass", Shape.STAIRS));
 		assertTrue(Materials.supports("glass", Shape.PANE));
 		assertFalse(Materials.find("unobtainium").isPresent());
+	}
+
+	@Test
+	void everyRegisteredBlockIdExistsInVanilla() {
+		List<String> missing = new ArrayList<>();
+		Materials.all().values().forEach(m -> m.shapes().values().forEach(id -> {
+			if (!VanillaBlockStates.exists(id)) {
+				missing.add(m.name() + " -> " + id);
+			}
+		}));
+		assertEquals(List.of(), missing);
 	}
 }
