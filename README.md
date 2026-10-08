@@ -113,7 +113,7 @@ tests:
 
 ## Development
 
-Building needs JDK 25, because Loom 1.18 requires it. The mod itself targets Java 21.
+Requires JDK 21. The Gradle daemon is pinned to Java 21 in `gradle/gradle-daemon-jvm.properties`.
 
 ```bash
 ./gradlew build          # compile and run all tests
