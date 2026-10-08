@@ -74,11 +74,11 @@ public final class Materials {
 		fullOnly("calcite", "polished_diorite");
 		fullOnly("dripstone_block", "andesite");
 		fullOnly("smooth_basalt", "polished_blackstone");
-		fullOnly("terracotta", "bricks");
+		fullOnly("terracotta", null);
 		fullOnly("moss_block", "mossy_cobblestone");
 		for (String c : COLORS) {
-			fullOnly(c + "_terracotta", "bricks");
-			fullOnly(c + "_concrete", "smooth_stone");
+			fullOnly(c + "_terracotta", null);
+			fullOnly(c + "_concrete", null);
 		}
 		for (String prefix : new String[] {"", "exposed_", "weathered_", "oxidized_"}) {
 			stone("waxed_" + prefix + "cut_copper", "waxed_" + prefix + "cut_copper", "waxed_" + prefix + "cut_copper", false, null);
