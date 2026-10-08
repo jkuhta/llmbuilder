@@ -7,7 +7,8 @@ import io.github.jkuhta.llmbuilder.spec.SpecValidator;
 import io.github.jkuhta.llmbuilder.testutil.IsoRenderer;
 import io.github.jkuhta.llmbuilder.testutil.VanillaBlockStates;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import io.github.jkuhta.llmbuilder.spec.ExampleSpecs;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,8 +19,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Every example spec validates, generates without realism violations and uses only real block states. */
 class ExampleBuildingsTest {
+	static java.util.List<String> names() {
+		return ExampleSpecs.NAMES;
+	}
+
 	@ParameterizedTest
-	@ValueSource(strings = {"canal_house", "medieval_tower", "modern_villa", "farmhouse", "gothic_chapel"})
+	@MethodSource("io.github.jkuhta.llmbuilder.generator.ExampleBuildingsTest#names")
 	void generatesRealisticBuilding(String name) throws IOException {
 		BuildingSpec spec = Examples.load(name);
 		SpecValidator.Result validation = SpecValidator.validate(spec, SpecValidator.Limits.DEFAULT);
@@ -40,7 +45,7 @@ class ExampleBuildingsTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = {"canal_house", "medieval_tower", "modern_villa", "farmhouse", "gothic_chapel"})
+	@MethodSource("io.github.jkuhta.llmbuilder.generator.ExampleBuildingsTest#names")
 	void isDeterministic(String name) throws IOException {
 		BuildingSpec spec = Examples.load(name);
 		BlockBuffer a = BuildingGenerator.generate(spec).buffer();
